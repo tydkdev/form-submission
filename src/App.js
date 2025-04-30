@@ -1,8 +1,5 @@
-import logo from './logo.svg';
 import './App.css';
 import { useState } from 'react';
-import { useEffect } from 'react';
-import { useRef } from 'react';
 
 function App() {
 
@@ -12,44 +9,106 @@ function App() {
   const [contact, setContact] = useState("");
 
   const [gender, setGender] = useState("male");
-  const [subject, setSubject] = useState("English");
+  const [subject, setSubject] = useState({
+    english: true,
+    maths: false,
+    physics: false,
+  });
 
-  const [resume, setResume] = useState(null);
+  const [resume, setResume] = useState("");
   const [url, setUrl] = useState();
 
-  const [selectedOptions, setSelectedOptions] = useState();
+  const [selectedOptions, setSelectedOptions] = useState("");
 
   const [about, setAbout] = useState("");
 
 
-  const handleReset = (e) => {
-    e.preventDefault();
+  const handleReset = () => {
     setFirstName(""); 
+    setLastName("");
+    setEmail("");
+    setContact("");
+    setGender("male");
+    setSubject({
+      english: true,
+      maths: false,
+      physics: false,
+    });
+    setResume("");
+    setUrl("");
+    setSelectedOptions("");
+    setAbout("");
   }
 
-  const handleSubmit = (e) => {}
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("First Name: ", firstName);
+    console.log("Last Name: ", lastName);
+    console.log("Email: ", email);
+    console.log("Contact: ", contact);
+    console.log("About: ", about);
+    console.log("url: ", url);
+  }
 
-
+  const handleSubjectChange = (sub) => {
+    setSubject((prevState) => ({
+      ...prevState,
+      [sub]: !prevState[sub],
+    }));
+  }
 
   return (
     <div className="App">
       <h1>Form in React</h1>
       <fieldset>
-        <form> 
-          <lable>First Name</lable>
-          <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-          <lable>Last Name</lable>  
-          <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-          <lable>Email</lable>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <lable>Contact</lable>
-          <input type="tel" value={contact} onChange={(e) => setContact(e.target.value)} /> 
+        <form action="#" method='get'> 
+          <label>First Name*</label>
+          <input 
+            type="text"
+            id='firstname'
+            name='firstname'
+            placeholder='Enter your first name'
+            required 
+            value={firstName} 
+            onChange={(e) => setFirstName(e.target.value)} 
+          />
+          <label>Last Name*</label>  
+          <input 
+            type="text"
+            id='lastname'
+            name='lastname' 
+            value={lastName} 
+            onChange={(e) => setLastName(e.target.value)}
+            placeholder='Enter your last name'
+            required 
+          />
+          <label>Enter Email*</label>
+          <input 
+            type="email"
+            id='email'
+            name='email'
+            placeholder='Enter your email'
+            required 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
+          />
+          <label>Contact*</label>
+          <input 
+            type="tel"
+            id='contact'
+            name='contact'
+            placeholder='Enter your contact number' 
+            value={contact} 
+            onChange={(e) => setContact(e.target.value)}
+            required 
+          /> 
           <label>Gender*</label>
           <input 
             type="radio" 
             name="gender" 
             id="male" 
-            value="male" 
+            value="male"
+            checked={gender === "male"} 
             onChange={(e) => setGender(e.target.value)} 
           /> Male
           <input 
@@ -57,6 +116,7 @@ function App() {
             name="gender"
             id="female"
             value="female"
+            checked={gender === "female"}
             onChange={(e) => setGender(e.target.value)}
           /> Female
           <input
@@ -64,67 +124,77 @@ function App() {
             name="gender"
             id="other"
             value="other"
+            checked={gender === "other"}
             onChange={(e) => setGender(e.target.value)}
           /> Other
-          <label>Subject</label>
+          <label>Your best subject</label>
           <input
             type="checkbox"
-            name="subject"
+            name="lang"
             id="english"
-            value="English"
-            onChange={(e) => setSubject(e.target.value)}
+            checked={subject.english === true}
+            onChange={(e) => handleSubjectChange("english")}
           /> English
           <input
             type="checkbox"
-            name="subject"
-            id="maths"
-            value="Maths"
-            onChange={(e) => setSubject(e.target.value)}
+            name="lang"
+            id='maths'
+            checked={subject.maths === true}
+            onChange={(e) => handleSubjectChange("maths")}
           /> Maths
           <input
             type="checkbox"
-            name="subject"
-            id="Physics"
-            value="Physics"
-            onChange={(e) => setSubject(e.target.value)}
+            name="lang"
+            id="physics"
+            checked={subject.physics === true}
+            onChange={(e) => handleSubjectChange("physics")}
           /> Physics
-          <label>Resume</label>
+          <label>Upload Resume*</label>
           <input
             type="file"
-            name="resume"
-            id="resume"
+            name="file"
+            id="file"
             onChange={(e) => {
               setResume(e.target.files[0]);
-              setUrl(URL.createObjectURL(e.target.files[0]));
             }}
+            placeholder='Enter Upload File'
+            required
           />
-          <label>URL</label>
+          <label>Enter URL*</label>
           <input
             type="url"
             name="url"
             id="url"
-            value={url}
             onChange={(e) => setUrl(e.target.value)}
+            placeholder='Enter your URL'
+            required
           />
-          <label>Selected Options</label>
+          <label>Select your choice</label>
           <select
-            name="selectedOptions"
-            id="selectedOptions"
-            multiple
+            name="select"
+            id="select"
             value={selectedOptions}
             onChange={(e) => {
-              const options = Array.from(e.target.selectedOptions, option => option.value);
-              setSelectedOptions(options);
+              setSelectedOptions(e.target.value);
             }}
           >
-            <option value="option1">Option 1</option>
-            <optgroup label="Group 1">
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+            <option 
+              value=""
+              disabled
+              selected={selectedOptions === ""}
+            >
+              Select your Ans
+            </option>
+            <optgroup label="Beginers">
+              <option value="1">HTML</option>
+              <option value="2">CSS</option>
+              <option value="3">JavaScript</option>
             </optgroup>
-            <optgroup label="Group 2">
-              <option value="option4">Option 4</option>
-              <option value="option5">Option 5</option>
+            <optgroup label="Advance">
+              <option value="4">React</option>
+              <option value="5">Node</option>
+              <option value="6">Express</option>
+              <option value="t">Mongo</option>
             </optgroup>
           </select>
           <label>About</label>
@@ -133,7 +203,6 @@ function App() {
             id="about"
             cols="30"
             rows="10"
-            value={about}
             onChange={(e) => setAbout(e.target.value)}
             placeholder='About yourself'
             required
